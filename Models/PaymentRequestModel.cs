@@ -15,7 +15,6 @@ public class PaymentRequestModel
     [Required]
     public decimal Amount { get; set; }
 
-    // Constructor to initialize non-nullable properties
     public PaymentRequestModel(int clientId, string typeOfService, DateTime monthYear, decimal amount)
     {
         ClientId = clientId;

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj": {}
+    "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\Backend\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj": {
+    "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\Backend\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj",
+        "projectUniqueName": "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\Backend\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj",
         "projectName": "BasicServicesPaymentAPI",
-        "projectPath": "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj",
+        "projectPath": "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\Backend\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI.csproj",
         "packagesPath": "C:\\Users\\harol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\BasicServicesPaymentAPI\\BasicServicesPaymentAPI\\obj\\",
+        "outputPath": "C:\\Users\\harol\\OneDrive\\Documents\\Projects\\Backend\\BasicServicesPaymentAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
