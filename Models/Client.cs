@@ -1,6 +1,11 @@
 public class Client
 {
-    public int ClientId { get; set; }
+    public Client(int id, string name)
+    {
+        Id = id;
+        Name = name; // Initialize non-nullable property 'Name'
+    }
+
+    public int Id { get; set; }
     public string Name { get; set; }
-    // Other properties specific to the Client
 }

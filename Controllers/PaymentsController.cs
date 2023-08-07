@@ -1,36 +1,47 @@
-[ApiController]
-[Route("api/payments")]
-public class PaymentsController : ControllerBase
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+
+namespace BasicBilling.API.Controllers
 {
-    private readonly IPaymentService _paymentService;
-
-    public PaymentsController(IPaymentService paymentService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PaymentsController : ControllerBase
     {
-        _paymentService = paymentService;
-    }
+        private readonly IPaymentService _paymentService;
 
-    [HttpGet("{clientId}/pending")]
-    public IActionResult GetPendingBills(int clientId)
-    {
-        var pendingBills = _paymentService.GetPendingBills(clientId);
-        return Ok(pendingBills);
-    }
+        public PaymentsController(IPaymentService paymentService)
+        {
+            _paymentService = paymentService;
+        }
 
-    [HttpGet("{clientId}/payment-history")]
-    public IActionResult GetPaymentHistory(int clientId)
-    {
-        var paymentHistory = _paymentService.GetPaymentHistory(clientId);
-        return Ok(paymentHistory);
-    }
+        [HttpPost("process")]
+        public IActionResult ProcessPayment([FromBody] PaymentRequestModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-    [HttpPost("pay")]
-    public IActionResult PayBill([FromBody] PaymentRequest paymentRequest)
-    {
-        // Implement the logic to validate the payment data and process the payment.
-        // In a real application, you should add error handling and proper data storage.
+            _paymentService.ProcessPayment(model.ClientId, model.TypeOfService, model.MonthYear, model.Amount);
 
-        _paymentService.ProcessPayment(paymentRequest.ClientId, paymentRequest.TypeOfService, paymentRequest.MonthYear, paymentRequest.Amount);
+            return Ok();
+        }
 
-        return Ok();
+        [HttpGet("pending/{clientId}")]
+        public IActionResult GetPendingBills(int clientId)
+        {
+            var pendingBills = _paymentService.GetPendingBills(clientId);
+
+            return Ok(pendingBills);
+        }
+
+        [HttpGet("history/{clientId}")]
+        public IActionResult GetPaymentHistory(int clientId)
+        {
+            var paymentHistory = _paymentService.GetPaymentHistory(clientId);
+
+            return Ok(paymentHistory);
+        }
     }
 }

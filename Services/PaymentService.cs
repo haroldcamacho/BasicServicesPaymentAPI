@@ -1,61 +1,54 @@
-public class PaymentService : IPaymentService
+using System;
+using System.Linq;
+using BasicBilling.API.Data;
+
+namespace BasicBilling.API.Services
 {
-    private readonly List<Client> _clients; // In a real application, this should be replaced with a database or data access layer
-    private readonly List<Bill> _bills;
-    private readonly List<Payment> _payments;
-
-    public PaymentService()
+    public class PaymentService : IPaymentService
     {
-        // Initialize data with some test values. In a real application, data will be fetched from the database.
-        _clients = new List<Client>
+        private readonly DataContext _context;
+
+        public PaymentService(DataContext context)
         {
-            new Client { ClientId = 1, Name = "Client A" },
-            new Client { ClientId = 2, Name = "Client B" },
-            // Add more clients here
-        };
+            _context = context;
+        }
 
-        _bills = new List<Bill>
+        public IEnumerable<Bill> GetPendingBills(int clientId)
         {
-            new Bill { BillId = 1, ClientId = 1, TypeOfService = "Service1", MonthYear = new DateTime(2023, 8, 1), IsPaid = false },
-            new Bill { BillId = 2, ClientId = 1, TypeOfService = "Service2", MonthYear = new DateTime(2023, 7, 1), IsPaid = false },
-            // Add more bills here
-        };
+            return _context.Bills.Where(b => b.ClientId == clientId && !b.IsPaid);
+        }
 
-        _payments = new List<Payment>();
-    }
-
-    public IEnumerable<Bill> GetPendingBills(int clientId)
-    {
-        return _bills.Where(b => b.ClientId == clientId && !b.IsPaid);
-    }
-
-    public IEnumerable<Payment> GetPaymentHistory(int clientId)
-    {
-        return _payments.Where(p => _bills.Any(b => b.BillId == p.BillId && b.ClientId == clientId));
-    }
-
-    public void ProcessPayment(int clientId, string typeOfService, DateTime monthYear, decimal amount)
-    {
-        // Implement the logic to validate the payment data and update the bill's state to paid.
-        // You should also check if the bill exists and belongs to the specified client.
-        // If successful, update the payment history accordingly.
-        // In a real application, you should add error handling and proper data storage.
-        var bill = _bills.FirstOrDefault(b =>
-            b.ClientId == clientId &&
-            b.TypeOfService == typeOfService &&
-            b.MonthYear == monthYear &&
-            !b.IsPaid);
-
-        if (bill != null)
+        public IEnumerable<Payment> GetPaymentHistory(int clientId)
         {
-            bill.IsPaid = true;
-            _payments.Add(new Payment
+            return _context.Payments
+                .Join(_context.Bills,
+                    payment => payment.BillId,
+                    bill => bill.BillId,
+                    (payment, bill) => new { Payment = payment, Bill = bill })
+                .Where(x => x.Bill.ClientId == clientId)
+                .Select(x => x.Payment);
+        }
+
+        public void ProcessPayment(int clientId, string typeOfService, DateTime monthYear, decimal amount)
+        {
+            var bill = _context.Bills.FirstOrDefault(b =>
+                b.ClientId == clientId &&
+                b.TypeOfService == typeOfService &&
+                b.MonthYear == monthYear &&
+                !b.IsPaid);
+
+            if (bill != null)
             {
-                PaymentId = _payments.Count + 1,
-                BillId = bill.BillId,
-                Amount = amount,
-                PaymentDate = DateTime.Now
-            });
+                bill.IsPaid = true;
+                _context.Payments.Add(new Payment
+                {
+                    BillId = bill.BillId,
+                    Amount = amount,
+                    PaymentDate = DateTime.Now
+                });
+
+                _context.SaveChanges();
+            }
         }
     }
 }
